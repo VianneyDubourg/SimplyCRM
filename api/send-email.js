@@ -26,13 +26,16 @@ module.exports = async (req, res) => {
     try {
         const { to, subject, message, replyTo } = req.body;
 
-        // Validation
-        if (!to || !subject || !message) {
+        // Validation (subject peut être vide)
+        if (!to || !message) {
             return res.status(400).json({
                 success: false,
-                error: 'Paramètres manquants: to, subject, message requis'
+                error: 'Paramètres manquants: to et message requis'
             });
         }
+        
+        // Utiliser un objet par défaut si vide
+        const emailSubject = subject && subject.trim() !== '' ? subject.trim() : '(Sans objet)';
 
         // Configuration SMTP depuis les variables d'environnement Vercel
         const smtpConfig = {
@@ -66,7 +69,7 @@ module.exports = async (req, res) => {
                 address: smtpConfig.auth.user
             },
             to: to,
-            subject: subject,
+            subject: emailSubject,
             text: message,
             html: message.replace(/\n/g, '<br>'),
             replyTo: replyTo || smtpConfig.auth.user

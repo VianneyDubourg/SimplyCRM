@@ -337,6 +337,27 @@ body {
     padding: 8px 16px;
 }
 
+.subject-input-container {
+    margin-bottom: 8px;
+}
+
+.subject-input-container input {
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #ffffff;
+    font-size: 13px;
+    outline: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    color: #54656f;
+}
+
+.subject-input-container input::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
 .input-actions {
     display: flex;
     gap: 8px;
@@ -756,6 +777,9 @@ body {
             </div>
 
             <div class="message-input-container">
+                <div class="subject-input-container">
+                    <input type="text" id="subjectInput" placeholder="Objet du mail (optionnel)">
+                </div>
                 <div class="input-actions">
                     <button id="attachBtn" class="input-action-btn" title="Pièce jointe">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -1128,7 +1152,7 @@ async function sendEmail(to, subject, content) {
             },
             body: JSON.stringify({
                 to: to,
-                subject: subject || 'Message de SimplyCRM',
+                subject: subject || '', // Objet vide si non spécifié
                 message: content,
                 replyTo: 'vianney@stelneo.com'
             })
@@ -1184,14 +1208,18 @@ async function sendMessage() {
     const conversation = conversations.find(c => c.id === currentConversationId);
     if (!conversation) return;
 
+    // Récupérer l'objet (optionnel) - peut être vide
+    const subject = document.getElementById('subjectInput').value.trim();
+
     // Add message to UI immediately
     addMessage(currentConversationId, content, 'sent');
     messageInput.value = '';
+    document.getElementById('subjectInput').value = ''; // Réinitialiser l'objet après envoi
 
-    // Send email
+    // Send email avec l'objet personnalisé (vide si non spécifié)
     const result = await sendEmail(
         conversation.contact.email,
-        `Message de ${conversation.contact.name}`,
+        subject, // Peut être vide, l'API gérera
         content
     );
 
@@ -1260,6 +1288,15 @@ function initializeApp() {
     messageInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             sendMessage();
+        }
+    });
+    
+    // Permettre d'envoyer avec Entrée depuis le champ objet
+    const subjectInput = document.getElementById('subjectInput');
+    subjectInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Empêcher le saut de ligne
+            messageInput.focus(); // Passer au champ message
         }
     });
 
