@@ -457,49 +457,73 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
 }
 
 .modal-content {
     background-color: #ffffff;
-    margin: 10% auto;
+    margin: 5% auto;
     padding: 0;
-    border-radius: 8px;
+    border-radius: 12px;
     width: 90%;
-    max-width: 500px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 520px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: modalSlideIn 0.2s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .modal-header {
-    padding: 20px;
-    border-bottom: 1px solid #e0e0e0;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e9edef;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: #f0f2f5;
 }
 
 .modal-header h3 {
     margin: 0;
-    font-size: 18px;
+    font-size: 17px;
+    font-weight: 400;
     color: #111b21;
+    line-height: 21px;
 }
 
 .close-modal {
     background: none;
     border: none;
-    font-size: 24px;
+    font-size: 28px;
     cursor: pointer;
-    color: #54656f;
+    color: #667781;
     padding: 0;
-    width: 30px;
-    height: 30px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.15s;
+}
+
+.close-modal:hover {
+    background-color: #e9edef;
 }
 
 .modal-body {
-    padding: 20px;
+    padding: 24px;
+    background-color: #ffffff;
 }
 
 /* Template Form */
@@ -572,55 +596,174 @@ body {
 }
 
 /* Broadcast Form */
-.broadcast-form textarea {
-    min-height: 150px;
-    margin-bottom: 16px;
+.broadcast-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.broadcast-form label {
+    font-size: 14px;
+    color: #667781;
+    font-weight: 400;
+    margin-bottom: 4px;
+    display: block;
 }
 
 .broadcast-form select {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 16px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    font-size: 14px;
+    padding: 12px 16px;
+    margin-bottom: 0;
+    border: 1px solid #e9edef;
+    border-radius: 8px;
+    font-size: 15px;
     outline: none;
+    background-color: #ffffff;
+    color: #111b21;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    appearance: none;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="%23667781" d="M6 9L1 4h10z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+}
+
+.broadcast-form select:hover {
+    border-color: #d1d7db;
+}
+
+.broadcast-form select:focus {
+    border-color: #25d366;
+    box-shadow: 0 0 0 2px rgba(37, 211, 102, 0.1);
+}
+
+.broadcast-form textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px 16px;
+    margin-bottom: 0;
+    border: 1px solid #e9edef;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    background-color: #ffffff;
+    color: #111b21;
+    resize: vertical;
+    font-family: inherit;
+    line-height: 20px;
+    transition: border-color 0.15s;
+}
+
+.broadcast-form textarea::placeholder {
+    color: #667781;
+}
+
+.broadcast-form textarea:hover {
+    border-color: #d1d7db;
+}
+
+.broadcast-form textarea:focus {
+    border-color: #25d366;
+    box-shadow: 0 0 0 2px rgba(37, 211, 102, 0.1);
 }
 
 .broadcast-form button {
     background-color: #25d366;
     color: white;
     border: none;
-    padding: 12px 20px;
-    border-radius: 4px;
+    padding: 12px 24px;
+    border-radius: 24px;
     cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.2s;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.15s;
+    width: 100%;
+    margin-top: 8px;
+    box-shadow: 0 2px 4px rgba(37, 211, 102, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.broadcast-form button:hover {
+.broadcast-form button:hover:not(:disabled) {
     background-color: #20ba5a;
+    box-shadow: 0 4px 8px rgba(37, 211, 102, 0.3);
+    transform: translateY(-1px);
+}
+
+.broadcast-form button:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(37, 211, 102, 0.2);
+}
+
+.broadcast-form button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
 }
 
 .broadcast-results {
-    margin-top: 20px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #e9edef;
+}
+
+.broadcast-results h4 {
+    font-size: 15px;
+    font-weight: 400;
+    color: #111b21;
+    margin: 0 0 12px 0;
 }
 
 .result-item {
-    padding: 8px 12px;
-    margin-bottom: 4px;
-    border-radius: 4px;
+    padding: 10px 14px;
+    margin-bottom: 6px;
+    border-radius: 8px;
     font-size: 14px;
+    line-height: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: resultSlideIn 0.2s ease-out;
+}
+
+@keyframes resultSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .result-item.success {
-    background-color: #dcf8c6;
-    color: #303030;
+    background-color: #d9fdd3;
+    color: #111b21;
+    border-left: 3px solid #25d366;
 }
 
 .result-item.error {
     background-color: #ffeaea;
     color: #d93025;
+    border-left: 3px solid #d93025;
+}
+
+.result-item::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.result-item.success::before {
+    background-color: #25d366;
+}
+
+.result-item.error::before {
+    background-color: #d93025;
 }
 
 /* New Chat Form */
@@ -863,13 +1006,25 @@ body {
                 </div>
                 <div class="modal-body">
                     <div class="broadcast-form">
-                        <select id="broadcastTemplate">
-                            <option value="">Choisir un template</option>
-                        </select>
-                        <textarea id="broadcastEmails" placeholder="Emails séparés par des virgules ou sauts de ligne"></textarea>
-                        <button id="sendBroadcastBtn">Envoyer à tous</button>
+                        <div>
+                            <label for="broadcastTemplate">Template à utiliser</label>
+                            <select id="broadcastTemplate">
+                                <option value="">Choisir un template</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="broadcastEmails">Liste des emails</label>
+                            <textarea id="broadcastEmails" placeholder="Entrez les emails séparés par des virgules ou sauts de ligne&#10;Exemple:&#10;client1@email.com&#10;client2@email.com&#10;client3@email.com"></textarea>
+                        </div>
+                        <button id="sendBroadcastBtn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px; vertical-align: middle;">
+                                <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
+                            </svg>
+                            Envoyer à tous
+                        </button>
                     </div>
-                    <div class="broadcast-results" id="broadcastResults">
+                    <div class="broadcast-results" id="broadcastResults" style="display: none;">
+                        <h4>Résultats de l'envoi</h4>
                         <!-- Résultats de l'envoi -->
                     </div>
                 </div>
@@ -1278,10 +1433,35 @@ async function sendBroadcast() {
     // Parse emails
     const emails = emailsText.split(/[\n,]/).map(email => email.trim()).filter(email => email);
 
-    broadcastResults.innerHTML = '';
+    // Afficher la section des résultats
+    const resultsSection = document.getElementById('broadcastResults');
+    resultsSection.style.display = 'block';
+    resultsSection.querySelector('h4').textContent = `Résultats de l'envoi (${emails.length} email${emails.length > 1 ? 's' : ''})`;
+    
+    // Vider les résultats précédents
+    const resultsContainer = resultsSection;
+    const resultsList = Array.from(resultsContainer.children).filter(child => child.classList.contains('result-item'));
+    resultsList.forEach(item => item.remove());
+
+    // Désactiver le bouton pendant l'envoi
+    const sendBtn = document.getElementById('sendBroadcastBtn');
+    const originalText = sendBtn.innerHTML;
+    sendBtn.disabled = true;
+    sendBtn.style.opacity = '0.6';
+    sendBtn.innerHTML = '<span>Envoi en cours...</span>';
+
+    let successCount = 0;
+    let errorCount = 0;
 
     for (const email of emails) {
-        if (!email.includes('@')) continue;
+        if (!email.includes('@')) {
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item error';
+            resultItem.textContent = `${email}: Email invalide`;
+            resultsContainer.appendChild(resultItem);
+            errorCount++;
+            continue;
+        }
 
         // Create conversation if it doesn't exist
         let conversation = conversations.find(c => c.contact.email === email);
@@ -1302,9 +1482,28 @@ async function sendBroadcast() {
 
         const resultItem = document.createElement('div');
         resultItem.className = `result-item ${result.success ? 'success' : 'error'}`;
-        resultItem.textContent = `${email}: ${result.success ? 'Envoyé' : 'Erreur - ' + result.error}`;
-        broadcastResults.appendChild(resultItem);
+        resultItem.textContent = `${email}: ${result.success ? '✓ Envoyé avec succès' : '✗ Erreur - ' + result.error}`;
+        resultsContainer.appendChild(resultItem);
+
+        if (result.success) {
+            successCount++;
+        } else {
+            errorCount++;
+        }
     }
+
+    // Réactiver le bouton
+    sendBtn.disabled = false;
+    sendBtn.style.opacity = '1';
+    sendBtn.innerHTML = originalText;
+
+    // Afficher le résumé
+    const summary = document.createElement('div');
+    summary.className = 'result-item success';
+    summary.style.marginTop = '12px';
+    summary.style.fontWeight = '500';
+    summary.textContent = `Résumé: ${successCount} envoyé${successCount > 1 ? 's' : ''}, ${errorCount} erreur${errorCount > 1 ? 's' : ''}`;
+    resultsContainer.appendChild(summary);
 
     renderConversations();
 }
