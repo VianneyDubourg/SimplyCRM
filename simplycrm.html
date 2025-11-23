@@ -1443,7 +1443,7 @@ body {
         </div>
 
         <!-- Modal de connexion -->
-        <div id="loginModal" class="modal" style="display: block;">
+        <div id="loginModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3>Accès SimplyCRM</h3>
@@ -1530,41 +1530,56 @@ function setAuthenticated(value) {
     sessionStorage.setItem('authenticated', value ? 'true' : 'false');
 }
 
-// Vérifier l'authentification au chargement
-const loginModal = document.getElementById('loginModal');
-const mainApp = document.getElementById('mainApp');
-
-if (!isAuthenticated()) {
-    loginModal.style.display = 'block';
-    mainApp.style.display = 'none';
-} else {
-    loginModal.style.display = 'none';
-    mainApp.style.display = 'flex';
-}
-
-// Gestion de la connexion
-document.getElementById('loginBtn').addEventListener('click', function() {
-    const loginCode = document.getElementById('loginCode').value.trim();
-    const accessCode = getAccessCode();
+// Fonction pour initialiser l'authentification (appelée après le chargement du DOM)
+function initializeAuth() {
+    const loginModal = document.getElementById('loginModal');
+    const mainApp = document.getElementById('mainApp');
     
-    if (loginCode === accessCode) {
-        setAuthenticated(true);
+    if (!loginModal || !mainApp) {
+        console.error('Éléments DOM non trouvés');
+        return;
+    }
+    
+    // Vérifier l'authentification au chargement
+    if (!isAuthenticated()) {
+        loginModal.style.display = 'block';
+        mainApp.style.display = 'none';
+    } else {
         loginModal.style.display = 'none';
         mainApp.style.display = 'flex';
-        checkConfig();
-    } else {
-        alert('Code d\'accès incorrect');
-        document.getElementById('loginCode').value = '';
-        document.getElementById('loginCode').focus();
     }
-});
-
-// Permettre la connexion avec Enter
-document.getElementById('loginCode').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        document.getElementById('loginBtn').click();
+    
+    // Gestion de la connexion
+    const loginBtn = document.getElementById('loginBtn');
+    const loginCodeInput = document.getElementById('loginCode');
+    
+    if (loginBtn) {
+        loginBtn.addEventListener('click', function() {
+            const loginCode = loginCodeInput.value.trim();
+            const accessCode = getAccessCode();
+            
+            if (loginCode === accessCode) {
+                setAuthenticated(true);
+                loginModal.style.display = 'none';
+                mainApp.style.display = 'flex';
+                checkConfig();
+            } else {
+                alert('Code d\'accès incorrect');
+                loginCodeInput.value = '';
+                loginCodeInput.focus();
+            }
+        });
     }
-});
+    
+    // Permettre la connexion avec Enter
+    if (loginCodeInput) {
+        loginCodeInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loginBtn.click();
+            }
+        });
+    }
+}
 
 // Gestion du changement de code
 function changeAccessCode() {
@@ -1649,7 +1664,10 @@ function replaceTemplateVariables(template, contact) {
 // Plus besoin de configuration EmailJS - on utilise le backend SMTP direct
 function checkConfig() {
     // Afficher l'application immédiatement
-    mainApp.style.display = 'flex';
+    const mainApp = document.getElementById('mainApp');
+    if (mainApp) {
+        mainApp.style.display = 'flex';
+    }
     initializeApp();
     
     // Vérifier que le serveur backend est accessible (en arrière-plan)
@@ -2252,6 +2270,7 @@ function initializeApp() {
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', function() {
+    initializeAuth();
     if (isAuthenticated()) {
         checkConfig();
     }
