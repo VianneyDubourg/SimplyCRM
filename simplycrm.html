@@ -313,12 +313,32 @@ body {
     box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
 }
 
+.message-subject {
+    font-size: 13px;
+    font-weight: 600;
+    color: #111b21;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    line-height: 18px;
+}
+
 .message-content {
     font-size: 14.2px;
     line-height: 19px;
     letter-spacing: 0;
     word-wrap: break-word;
     white-space: pre-wrap;
+}
+
+.message-signature {
+    font-size: 13px;
+    color: #667781;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    line-height: 18px;
+    font-style: italic;
 }
 
 .message-time {
@@ -352,6 +372,7 @@ body {
     padding: 8px 8px 4px 8px;
     display: block;
     transition: all 0.2s ease-out;
+    padding-left: 64px; /* Aligné avec le champ message (8px wrapper padding + 44px bouton + 4px margin + 8px gap) */
 }
 
 .subject-input-container {
@@ -1226,6 +1247,10 @@ body {
                             <label for="broadcastEmails">Liste des emails</label>
                             <textarea id="broadcastEmails" placeholder="Entrez les emails séparés par des virgules ou sauts de ligne&#10;Exemple:&#10;client1@email.com&#10;client2@email.com&#10;client3@email.com"></textarea>
                         </div>
+                        <div>
+                            <label for="broadcastSignature">Signature (optionnel)</label>
+                            <textarea id="broadcastSignature" placeholder="Ex:&#10;Cordialement,&#10;Vianney Stelneo&#10;vianney@stelneo.com" rows="3"></textarea>
+                        </div>
                         <button id="sendBroadcastBtn">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px; vertical-align: middle;">
                                 <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
@@ -1439,13 +1464,26 @@ function renderMessages() {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${message.type}`;
 
-        messageDiv.innerHTML = `
-            <div class="message-bubble">
-                <div class="message-content">${message.content.replace(/\n/g, '<br>')}</div>
-                <div class="message-time">${formatTime(message.timestamp)}</div>
-            </div>
-        `;
+        let messageHTML = '<div class="message-bubble">';
+        
+        // Afficher l'objet si présent
+        if (message.subject && message.subject.trim()) {
+            messageHTML += `<div class="message-subject">📧 ${message.subject}</div>`;
+        }
+        
+        // Contenu du message
+        messageHTML += `<div class="message-content">${message.content.replace(/\n/g, '<br>')}</div>`;
+        
+        // Afficher la signature si présente
+        if (message.signature && message.signature.trim()) {
+            messageHTML += `<div class="message-signature">${message.signature.replace(/\n/g, '<br>')}</div>`;
+        }
+        
+        // Timestamp
+        messageHTML += `<div class="message-time">${formatTime(message.timestamp)}</div>`;
+        messageHTML += '</div>';
 
+        messageDiv.innerHTML = messageHTML;
         messagesContainer.appendChild(messageDiv);
     });
 
@@ -1453,7 +1491,7 @@ function renderMessages() {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
-function addMessage(conversationId, content, type = 'sent') {
+function addMessage(conversationId, content, type = 'sent', subject = '', signature = '') {
     const conversation = conversations.find(c => c.id === conversationId);
     if (!conversation) return;
 
@@ -1461,6 +1499,8 @@ function addMessage(conversationId, content, type = 'sent') {
         id: generateId(),
         content: content,
         type: type,
+        subject: subject,
+        signature: signature,
         timestamp: new Date().toISOString()
     };
 
@@ -1634,7 +1674,7 @@ async function sendMessage() {
     const subject = document.getElementById('subjectInput').value.trim();
 
     // Add message to UI immediately
-    addMessage(currentConversationId, content, 'sent');
+    addMessage(currentConversationId, content, 'sent', subject);
     messageInput.value = '';
     messageInput.style.height = '48px'; // Réinitialiser la hauteur du textarea
     document.getElementById('subjectInput').value = ''; // Réinitialiser l'objet après envoi
@@ -1658,6 +1698,7 @@ async function sendMessage() {
 async function sendBroadcast() {
     const templateId = broadcastTemplate.value;
     const emailsText = broadcastEmails.value.trim();
+    const signature = document.getElementById('broadcastSignature').value.trim();
 
     if (!templateId || !emailsText) {
         alert('Veuillez sélectionner un template et saisir des emails');
@@ -1708,12 +1749,19 @@ async function sendBroadcast() {
             conversation = createConversation(name, email);
         }
 
-        const content = replaceTemplateVariables(template.content, conversation.contact);
-        addMessage(conversation.id, content, 'sent');
+        let content = replaceTemplateVariables(template.content, conversation.contact);
+        
+        // Ajouter la signature si elle existe
+        if (signature) {
+            content += '\n\n' + signature;
+        }
+        
+        const subject = `Message de ${conversation.contact.name}`;
+        addMessage(conversation.id, content, 'sent', subject, signature);
 
         const result = await sendEmail(
             email,
-            `Message de ${conversation.contact.name}`,
+            subject,
             content
         );
 
