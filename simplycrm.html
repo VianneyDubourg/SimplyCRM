@@ -873,6 +873,148 @@ body {
     opacity: 0.6;
 }
 
+/* Login Form */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.login-form > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-form label {
+    font-size: 14px;
+    color: #667781;
+    font-weight: 400;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 0;
+    border: 1px solid #e9edef;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    background-color: #ffffff;
+    color: #111b21;
+    font-family: inherit;
+    transition: border-color 0.15s;
+}
+
+.login-form input::placeholder {
+    color: #667781;
+}
+
+.login-form input:hover {
+    border-color: #d1d7db;
+}
+
+.login-form input:focus {
+    border-color: #25d366;
+    box-shadow: 0 0 0 2px rgba(37, 211, 102, 0.1);
+}
+
+.login-form button {
+    background-color: #25d366;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 24px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.15s;
+    width: 100%;
+    margin-top: 8px;
+    box-shadow: 0 2px 4px rgba(37, 211, 102, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-form button:hover {
+    background-color: #20ba5a;
+    box-shadow: 0 4px 8px rgba(37, 211, 102, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Change Code Form */
+.change-code-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.change-code-form > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.change-code-form label {
+    font-size: 14px;
+    color: #667781;
+    font-weight: 400;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.change-code-form input {
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 0;
+    border: 1px solid #e9edef;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    background-color: #ffffff;
+    color: #111b21;
+    font-family: inherit;
+    transition: border-color 0.15s;
+}
+
+.change-code-form input::placeholder {
+    color: #667781;
+}
+
+.change-code-form input:hover {
+    border-color: #d1d7db;
+}
+
+.change-code-form input:focus {
+    border-color: #25d366;
+    box-shadow: 0 0 0 2px rgba(37, 211, 102, 0.1);
+}
+
+.change-code-form button {
+    background-color: #25d366;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 24px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.15s;
+    width: 100%;
+    margin-top: 8px;
+    box-shadow: 0 2px 4px rgba(37, 211, 102, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.change-code-form button:hover {
+    background-color: #20ba5a;
+    box-shadow: 0 4px 8px rgba(37, 211, 102, 0.3);
+    transform: translateY(-1px);
+}
+
 .broadcast-results {
     margin-top: 24px;
     padding-top: 20px;
@@ -1130,6 +1272,11 @@ body {
                             <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M11,6V8H13V6H11M11,10V18H13V10H11Z"/>
                         </svg>
                     </button>
+                    <button id="settingsBtn" class="action-btn" title="Paramètres">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11.03L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11.03C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
 
@@ -1294,6 +1441,61 @@ body {
                 </div>
             </div>
         </div>
+
+        <!-- Modal de connexion -->
+        <div id="loginModal" class="modal" style="display: block;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Accès SimplyCRM</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="login-form">
+                        <div>
+                            <label for="loginCode">Code d'accès</label>
+                            <input type="password" id="loginCode" placeholder="Entrez le code d'accès" autofocus>
+                        </div>
+                        <button id="loginBtn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px; vertical-align: middle;">
+                                <path d="M12,1L8,5H11V14H13V5H16M18,23H6C4.89,23 4,22.1 4,21V9A2,2 0 0,1 6,7H9V9H6V21H18V9H15V7H18A2,2 0 0,1 20,9V21A2,2 0 0,1 18,23Z"/>
+                            </svg>
+                            Accéder
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal changement de code -->
+        <div id="changeCodeModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Changer le code d'accès</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="change-code-form">
+                        <div>
+                            <label for="currentCode">Code actuel</label>
+                            <input type="password" id="currentCode" placeholder="Entrez le code actuel">
+                        </div>
+                        <div>
+                            <label for="newCode">Nouveau code</label>
+                            <input type="password" id="newCode" placeholder="Entrez le nouveau code">
+                        </div>
+                        <div>
+                            <label for="confirmCode">Confirmer le nouveau code</label>
+                            <input type="password" id="confirmCode" placeholder="Confirmez le nouveau code">
+                        </div>
+                        <button id="changeCodeBtn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px; vertical-align: middle;">
+                                <path d="M12,1L8,5H11V14H13V5H16M18,23H6C4.89,23 4,22.1 4,21V9A2,2 0 0,1 6,7H9V9H6V21H18V9H15V7H18A2,2 0 0,1 20,9V21A2,2 0 0,1 18,23Z"/>
+                            </svg>
+                            Changer le code
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -1311,8 +1513,94 @@ let templates = JSON.parse(localStorage.getItem('templates')) || [];
 let currentConversationId = null;
 let isBroadcastMode = false;
 
-// Éléments DOM
+// Code d'accès - Initialiser avec un code par défaut si aucun n'existe
+function getAccessCode() {
+    return localStorage.getItem('accessCode') || '1234'; // Code par défaut
+}
+
+function setAccessCode(code) {
+    localStorage.setItem('accessCode', code);
+}
+
+function isAuthenticated() {
+    return sessionStorage.getItem('authenticated') === 'true';
+}
+
+function setAuthenticated(value) {
+    sessionStorage.setItem('authenticated', value ? 'true' : 'false');
+}
+
+// Vérifier l'authentification au chargement
+const loginModal = document.getElementById('loginModal');
 const mainApp = document.getElementById('mainApp');
+
+if (!isAuthenticated()) {
+    loginModal.style.display = 'block';
+    mainApp.style.display = 'none';
+} else {
+    loginModal.style.display = 'none';
+    mainApp.style.display = 'flex';
+}
+
+// Gestion de la connexion
+document.getElementById('loginBtn').addEventListener('click', function() {
+    const loginCode = document.getElementById('loginCode').value.trim();
+    const accessCode = getAccessCode();
+    
+    if (loginCode === accessCode) {
+        setAuthenticated(true);
+        loginModal.style.display = 'none';
+        mainApp.style.display = 'flex';
+        checkConfig();
+    } else {
+        alert('Code d\'accès incorrect');
+        document.getElementById('loginCode').value = '';
+        document.getElementById('loginCode').focus();
+    }
+});
+
+// Permettre la connexion avec Enter
+document.getElementById('loginCode').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        document.getElementById('loginBtn').click();
+    }
+});
+
+// Gestion du changement de code
+function changeAccessCode() {
+    const currentCode = document.getElementById('currentCode').value.trim();
+    const newCode = document.getElementById('newCode').value.trim();
+    const confirmCode = document.getElementById('confirmCode').value.trim();
+    const accessCode = getAccessCode();
+    
+    if (currentCode !== accessCode) {
+        alert('Code actuel incorrect');
+        return;
+    }
+    
+    if (newCode.length < 3) {
+        alert('Le nouveau code doit contenir au moins 3 caractères');
+        return;
+    }
+    
+    if (newCode !== confirmCode) {
+        alert('Les nouveaux codes ne correspondent pas');
+        return;
+    }
+    
+    setAccessCode(newCode);
+    alert('Code d\'accès modifié avec succès');
+    
+    // Réinitialiser le formulaire
+    document.getElementById('currentCode').value = '';
+    document.getElementById('newCode').value = '';
+    document.getElementById('confirmCode').value = '';
+    
+    // Fermer la popup
+    document.getElementById('changeCodeModal').style.display = 'none';
+}
+
+// Éléments DOM
 const conversationsList = document.getElementById('conversationsList');
 const messagesContainer = document.getElementById('messagesContainer');
 const messageInput = document.getElementById('messageInput');
@@ -1861,6 +2149,29 @@ function initializeApp() {
         broadcastModal.style.display = 'block';
     });
 
+    document.getElementById('settingsBtn').addEventListener('click', () => {
+        document.getElementById('changeCodeModal').style.display = 'block';
+    });
+
+    document.getElementById('changeCodeBtn').addEventListener('click', changeAccessCode);
+
+    // Permettre la validation avec Enter dans les champs de changement de code
+    document.getElementById('currentCode').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            document.getElementById('newCode').focus();
+        }
+    });
+    document.getElementById('newCode').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            document.getElementById('confirmCode').focus();
+        }
+    });
+    document.getElementById('confirmCode').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            changeAccessCode();
+        }
+    });
+
     document.getElementById('newChatBtn').addEventListener('click', () => {
         newChatModal.style.display = 'block';
     });
@@ -1931,16 +2242,20 @@ function initializeApp() {
         templateSelect.focus();
     });
 
-    // Close modals when clicking outside
+    // Close modals when clicking outside (except login modal)
     window.addEventListener('click', function(e) {
-        if (e.target.classList.contains('modal')) {
+        if (e.target.classList.contains('modal') && e.target.id !== 'loginModal') {
             e.target.style.display = 'none';
         }
     });
 }
 
 // Initialize the app
-document.addEventListener('DOMContentLoaded', checkConfig);
+document.addEventListener('DOMContentLoaded', function() {
+    if (isAuthenticated()) {
+        checkConfig();
+    }
+});
     </script>
 </body>
 </html>
