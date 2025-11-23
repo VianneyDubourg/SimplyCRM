@@ -1,27 +1,8 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "simplycrm.html",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/",
-      "dest": "/simplycrm.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/simplycrm.html"
+      "source": "/",
+      "destination": "/simplycrm.html"
     }
   ],
   "env": {

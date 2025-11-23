@@ -2,6 +2,9 @@
 const nodemailer = require('nodemailer');
 
 module.exports = async (req, res) => {
+    // Toujours définir les en-têtes JSON en premier
+    res.setHeader('Content-Type', 'application/json');
+    
     // Autoriser CORS
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -12,7 +15,7 @@ module.exports = async (req, res) => {
     );
 
     if (req.method === 'OPTIONS') {
-        res.status(200).end();
+        res.status(200).json({ success: true });
         return;
     }
 
