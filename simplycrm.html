@@ -26,11 +26,6 @@ body {
     background-color: #f0f0f0;
 }
 
-/* Cacher l'application par défaut, elle sera affichée après authentification */
-#mainApp {
-    display: none;
-}
-
 /* Sidebar */
 .sidebar {
     width: 350px;
@@ -538,11 +533,6 @@ body {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(2px);
-}
-
-/* La popup de connexion est visible par défaut */
-#loginModal {
-    display: block;
 }
 
 .modal-content {
@@ -1259,23 +1249,11 @@ body {
     </style>
 </head>
 <body>
-    <script>
-        // Script immédiat pour s'assurer que la popup s'affiche
-        (function() {
-            try {
-                // S'assurer que la popup de connexion est visible
-                window.addEventListener('DOMContentLoaded', function() {
-                    var loginModal = document.getElementById('loginModal');
-                    if (loginModal) {
-                        loginModal.style.display = 'block';
-                    }
-                });
-            } catch(e) {
-                console.error('Erreur script inline:', e);
-            }
-        })();
-    </script>
-    <div class="app" id="mainApp">
+    <!-- Test de visibilité -->
+    <div style="position: fixed; top: 0; left: 0; z-index: 9999; background: red; color: white; padding: 10px;">
+        Page chargée - Si vous voyez ceci, le HTML fonctionne
+    </div>
+    <div class="app" id="mainApp" style="display: none;">
         <!-- Sidebar gauche -->
         <div class="sidebar">
             <div class="sidebar-header">
@@ -1469,7 +1447,7 @@ body {
         </div>
 
         <!-- Modal de connexion -->
-        <div id="loginModal" class="modal">
+        <div id="loginModal" class="modal" style="display: block !important;">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3>Accès SimplyCRM</h3>
@@ -1533,27 +1511,52 @@ const isVercel = window.location.hostname.includes('vercel.app') ||
                  window.location.hostname.includes('vercel.com');
 const API_URL = isLocal ? 'http://localhost:3000/api' : '/api';
 
-// Variables globales
-let conversations = JSON.parse(localStorage.getItem('conversations')) || [];
-let templates = JSON.parse(localStorage.getItem('templates')) || [];
+// Variables globales - avec gestion d'erreur pour localStorage
+let conversations = [];
+let templates = [];
 let currentConversationId = null;
 let isBroadcastMode = false;
 
+try {
+    conversations = JSON.parse(localStorage.getItem('conversations')) || [];
+    templates = JSON.parse(localStorage.getItem('templates')) || [];
+} catch(e) {
+    console.error('Erreur lors du chargement depuis localStorage:', e);
+    conversations = [];
+    templates = [];
+}
+
 // Code d'accès - Initialiser avec un code par défaut si aucun n'existe
 function getAccessCode() {
-    return localStorage.getItem('accessCode') || '1234'; // Code par défaut
+    try {
+        return localStorage.getItem('accessCode') || '1234'; // Code par défaut
+    } catch(e) {
+        return '1234';
+    }
 }
 
 function setAccessCode(code) {
-    localStorage.setItem('accessCode', code);
+    try {
+        localStorage.setItem('accessCode', code);
+    } catch(e) {
+        console.error('Erreur lors de la sauvegarde du code:', e);
+    }
 }
 
 function isAuthenticated() {
-    return sessionStorage.getItem('authenticated') === 'true';
+    try {
+        return sessionStorage.getItem('authenticated') === 'true';
+    } catch(e) {
+        return false;
+    }
 }
 
 function setAuthenticated(value) {
-    sessionStorage.setItem('authenticated', value ? 'true' : 'false');
+    try {
+        sessionStorage.setItem('authenticated', value ? 'true' : 'false');
+    } catch(e) {
+        console.error('Erreur lors de la sauvegarde de l\'authentification:', e);
+    }
 }
 
 // Fonction pour initialiser l'authentification (appelée après le chargement du DOM)
@@ -2296,12 +2299,24 @@ function initializeApp() {
     });
 }
 
-// Initialize the app
-document.addEventListener('DOMContentLoaded', function() {
-    initializeAuth();
-    if (isAuthenticated()) {
-        checkConfig();
-    }
+// Initialize the app - Attendre que tout soit chargé
+window.addEventListener('DOMContentLoaded', function() {
+    // Petit délai pour s'assurer que tout est prêt
+    setTimeout(function() {
+        try {
+            initializeAuth();
+            if (isAuthenticated()) {
+                checkConfig();
+            }
+        } catch(error) {
+            console.error('Erreur lors de l\'initialisation:', error);
+            // En cas d'erreur, afficher quand même la popup de connexion
+            var loginModal = document.getElementById('loginModal');
+            if (loginModal) {
+                loginModal.style.display = 'block';
+            }
+        }
+    }, 100);
 });
     </script>
 </body>
