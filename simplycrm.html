@@ -528,71 +528,168 @@ body {
 
 /* Template Form */
 .template-form {
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #e9edef;
+}
+
+.template-form > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.template-form label {
+    font-size: 14px;
+    color: #667781;
+    font-weight: 400;
+    margin-bottom: 4px;
+    display: block;
 }
 
 .template-form input,
-.template-form textarea,
-.template-form select {
+.template-form textarea {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    font-size: 14px;
+    padding: 12px 16px;
+    margin-bottom: 0;
+    border: 1px solid #e9edef;
+    border-radius: 8px;
+    font-size: 15px;
     outline: none;
+    background-color: #ffffff;
+    color: #111b21;
+    font-family: inherit;
+    transition: border-color 0.15s;
+}
+
+.template-form input::placeholder,
+.template-form textarea::placeholder {
+    color: #667781;
+}
+
+.template-form input:hover,
+.template-form textarea:hover {
+    border-color: #d1d7db;
+}
+
+.template-form input:focus,
+.template-form textarea:focus {
+    border-color: #25d366;
+    box-shadow: 0 0 0 2px rgba(37, 211, 102, 0.1);
 }
 
 .template-form textarea {
-    min-height: 100px;
+    min-height: 120px;
     resize: vertical;
+    line-height: 20px;
 }
 
 .template-form button {
     background-color: #25d366;
     color: white;
     border: none;
-    padding: 10px 16px;
-    border-radius: 4px;
+    padding: 12px 24px;
+    border-radius: 24px;
     cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.2s;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.15s;
+    width: 100%;
+    margin-top: 8px;
+    box-shadow: 0 2px 4px rgba(37, 211, 102, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .template-form button:hover {
     background-color: #20ba5a;
+    box-shadow: 0 4px 8px rgba(37, 211, 102, 0.3);
+    transform: translateY(-1px);
+}
+
+.template-form button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(37, 211, 102, 0.2);
+}
+
+.templates-list-container {
+    margin-top: 8px;
+}
+
+.templates-list-container h4 {
+    font-size: 15px;
+    font-weight: 400;
+    color: #111b21;
+    margin: 0 0 12px 0;
 }
 
 .templates-list {
-    max-height: 300px;
+    max-height: 350px;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .template-item {
-    padding: 12px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    margin-bottom: 8px;
+    padding: 14px 16px;
+    border: 1px solid #e9edef;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.15s;
+    background-color: #ffffff;
+    animation: templateSlideIn 0.2s ease-out;
+}
+
+@keyframes templateSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .template-item:hover {
-    background-color: #f5f5f5;
+    background-color: #f0f2f5;
+    border-color: #d1d7db;
+    transform: translateX(2px);
+}
+
+.template-item:active {
+    transform: translateX(0);
 }
 
 .template-name {
     font-weight: 500;
-    margin-bottom: 4px;
+    font-size: 15px;
+    margin-bottom: 6px;
     color: #111b21;
+    line-height: 20px;
 }
 
 .template-preview {
-    font-size: 12px;
-    color: #54656f;
+    font-size: 13px;
+    color: #667781;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    line-height: 18px;
+}
+
+.template-empty {
+    padding: 40px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
 }
 
 /* Broadcast Form */
@@ -823,23 +920,27 @@ body {
 
 /* Scrollbar styling */
 .messages-container::-webkit-scrollbar,
-.conversations-list::-webkit-scrollbar {
+.conversations-list::-webkit-scrollbar,
+.templates-list::-webkit-scrollbar {
     width: 6px;
 }
 
 .messages-container::-webkit-scrollbar-track,
-.conversations-list::-webkit-scrollbar-track {
+.conversations-list::-webkit-scrollbar-track,
+.templates-list::-webkit-scrollbar-track {
     background: transparent;
 }
 
 .messages-container::-webkit-scrollbar-thumb,
-.conversations-list::-webkit-scrollbar-thumb {
+.conversations-list::-webkit-scrollbar-thumb,
+.templates-list::-webkit-scrollbar-thumb {
     background: #cccccc;
     border-radius: 3px;
 }
 
 .messages-container::-webkit-scrollbar-thumb:hover,
-.conversations-list::-webkit-scrollbar-thumb:hover {
+.conversations-list::-webkit-scrollbar-thumb:hover,
+.templates-list::-webkit-scrollbar-thumb:hover {
     background: #aaaaaa;
 }
 
@@ -986,12 +1087,26 @@ body {
                 </div>
                 <div class="modal-body">
                     <div class="template-form">
-                        <input type="text" id="templateName" placeholder="Nom du template">
-                        <textarea id="templateContent" placeholder="Contenu du template (utilisez {nom} pour le nom, {prenom} pour le prénom, etc.)"></textarea>
-                        <button id="saveTemplateBtn">Sauvegarder</button>
+                        <div>
+                            <label for="templateName">Nom du template</label>
+                            <input type="text" id="templateName" placeholder="Ex: Salutation client">
+                        </div>
+                        <div>
+                            <label for="templateContent">Contenu du template</label>
+                            <textarea id="templateContent" placeholder="Bonjour {prenom},&#10;&#10;Merci pour votre intérêt.&#10;&#10;Cordialement,&#10;Vianney Stelneo&#10;&#10;Variables disponibles: {nom}, {prenom}, {nom_complet}, {email}"></textarea>
+                        </div>
+                        <button id="saveTemplateBtn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px; vertical-align: middle;">
+                                <path d="M15,9H5V5H15M12,19A3,3 0 0,1 9,19A3,3 0 0,1 12,16A3,3 0 0,1 15,19M19,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.9 20.1,3 19,3Z"/>
+                            </svg>
+                            Sauvegarder le template
+                        </button>
                     </div>
-                    <div class="templates-list" id="templatesList">
-                        <!-- Templates seront ajoutés ici -->
+                    <div class="templates-list-container">
+                        <h4>Templates sauvegardés</h4>
+                        <div class="templates-list" id="templatesList">
+                            <!-- Templates seront ajoutés ici -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1270,13 +1385,27 @@ function createConversation(contactName, contactEmail) {
 function renderTemplates() {
     templatesList.innerHTML = '';
 
+    if (templates.length === 0) {
+        const emptyMessage = document.createElement('div');
+        emptyMessage.className = 'template-empty';
+        emptyMessage.innerHTML = `
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" style="margin-bottom: 12px; opacity: 0.5;">
+                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" fill="#667781"/>
+            </svg>
+            <p style="color: #667781; font-size: 14px; margin: 0;">Aucun template sauvegardé</p>
+            <p style="color: #667781; font-size: 13px; margin: 4px 0 0 0;">Créez votre premier template ci-dessus</p>
+        `;
+        templatesList.appendChild(emptyMessage);
+        return;
+    }
+
     templates.forEach(template => {
         const templateItem = document.createElement('div');
         templateItem.className = 'template-item';
 
         templateItem.innerHTML = `
             <div class="template-name">${template.name}</div>
-            <div class="template-preview">${template.content.substring(0, 50)}...</div>
+            <div class="template-preview">${template.content.substring(0, 60)}${template.content.length > 60 ? '...' : ''}</div>
         `;
 
         templateItem.addEventListener('click', () => useTemplate(template));
