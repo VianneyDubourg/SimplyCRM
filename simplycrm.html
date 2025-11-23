@@ -345,24 +345,38 @@ body {
 .message-input-container {
     background-color: #f0f2f5;
     border-top: 1px solid #e9edef;
-    padding: 5px 8px 5px 8px;
+    padding: 0;
+}
+
+.subject-input-wrapper {
+    padding: 6px 8px 4px 8px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.2s ease-out;
+}
+
+.subject-input-wrapper.show {
+    max-height: 60px;
+    opacity: 1;
+    padding: 6px 8px 4px 8px;
 }
 
 .subject-input-container {
-    margin-bottom: 4px;
-    padding: 0 8px;
+    padding: 0;
 }
 
 .subject-input-container input {
     width: 100%;
-    padding: 7px 12px;
+    padding: 6px 12px;
     border: none;
     border-radius: 8px;
     background-color: #ffffff;
-    font-size: 14px;
+    font-size: 13px;
     outline: none;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
     color: #111b21;
+    transition: all 0.15s;
 }
 
 .subject-input-container input::placeholder {
@@ -370,16 +384,28 @@ body {
     font-style: normal;
 }
 
+.subject-input-container input:focus {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.message-input-wrapper {
+    display: flex;
+    align-items: flex-end;
+    padding: 6px 8px;
+    gap: 8px;
+    background-color: #f0f2f5;
+}
+
 .input-actions {
     display: flex;
-    gap: 4px;
-    margin-bottom: 4px;
-    padding: 0 8px;
+    gap: 0;
+    align-items: center;
+    flex-shrink: 0;
 }
 
 .input-action-btn {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border: none;
     background: none;
     border-radius: 50%;
@@ -388,36 +414,44 @@ body {
     align-items: center;
     justify-content: center;
     color: #54656f;
-    transition: background-color 0.15s;
+    transition: all 0.15s;
     flex-shrink: 0;
+    margin-right: 4px;
 }
 
 .input-action-btn:hover {
     background-color: #e9edef;
 }
 
+.input-action-btn:active {
+    transform: scale(0.95);
+}
+
 .message-input {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     gap: 8px;
-    padding: 0 8px;
-    background-color: #f0f2f5;
+    flex: 1;
+    background-color: #ffffff;
+    border-radius: 21px;
+    padding: 2px 2px 2px 12px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    min-height: 44px;
 }
 
 .message-input input {
     flex: 1;
-    padding: 9px 12px;
+    padding: 9px 0;
     border: none;
-    border-radius: 21px;
-    background-color: #ffffff;
+    background: transparent;
     font-size: 15px;
     outline: none;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     color: #111b21;
     min-height: 20px;
     max-height: 100px;
     resize: none;
     line-height: 20px;
+    font-family: inherit;
 }
 
 .message-input input::placeholder {
@@ -425,8 +459,8 @@ body {
 }
 
 .send-btn {
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
     border: none;
     border-radius: 50%;
     background-color: #25d366;
@@ -435,17 +469,22 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.15s;
+    transition: all 0.15s;
     flex-shrink: 0;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: none;
 }
 
 .send-btn:hover {
     background-color: #20ba5a;
+    transform: scale(1.05);
 }
 
 .send-btn:active {
     transform: scale(0.95);
+}
+
+.message-input:has(input:not(:placeholder-shown)) .send-btn {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* Modals */
@@ -1102,28 +1141,32 @@ body {
             </div>
 
             <div class="message-input-container">
-                <div class="input-actions">
-                    <button id="attachBtn" class="input-action-btn" title="Pièce jointe">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M16.5,6V17.5A4,4 0 0,1 12.5,21.5A4,4 0 0,1 8.5,17.5V5A2.5,2.5 0 0,1 11,2.5A2.5,2.5 0 0,1 13.5,5V15.5A1,1 0 0,1 12.5,16.5A1,1 0 0,1 11.5,15.5V6H10V15.5A2.5,2.5 0 0,0 12.5,18A2.5,2.5 0 0,0 15,15.5V5A4,4 0 0,0 7,5V17.5A5.5,5.5 0 0,0 12.5,23A5.5,5.5 0 0,0 18,17.5V6H16.5Z"/>
-                        </svg>
-                    </button>
-                    <button id="templateQuickBtn" class="input-action-btn" title="Templates rapides">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
-                        </svg>
-                    </button>
+                <div class="subject-input-wrapper">
+                    <div class="subject-input-container">
+                        <input type="text" id="subjectInput" placeholder="Objet du mail (optionnel)">
+                    </div>
                 </div>
-                <div class="subject-input-container">
-                    <input type="text" id="subjectInput" placeholder="Objet du mail (optionnel)">
-                </div>
-                <div class="message-input">
-                    <input type="text" id="messageInput" placeholder="Tapez votre message...">
-                    <button id="sendBtn" class="send-btn" title="Envoyer">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
-                        </svg>
-                    </button>
+                <div class="message-input-wrapper">
+                    <div class="input-actions">
+                        <button id="attachBtn" class="input-action-btn" title="Pièce jointe">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M16.5,6V17.5A4,4 0 0,1 12.5,21.5A4,4 0 0,1 8.5,17.5V5A2.5,2.5 0 0,1 11,2.5A2.5,2.5 0 0,1 13.5,5V15.5A1,1 0 0,1 12.5,16.5A1,1 0 0,1 11.5,15.5V6H10V15.5A2.5,2.5 0 0,0 12.5,18A2.5,2.5 0 0,0 15,15.5V5A4,4 0 0,0 7,5V17.5A5.5,5.5 0 0,0 12.5,23A5.5,5.5 0 0,0 18,17.5V6H16.5Z"/>
+                            </svg>
+                        </button>
+                        <button id="templateQuickBtn" class="input-action-btn" title="Templates rapides">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="message-input">
+                        <input type="text" id="messageInput" placeholder="Tapez un message">
+                        <button id="sendBtn" class="send-btn" title="Envoyer">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1712,8 +1755,25 @@ function initializeApp() {
         }
     });
     
-    // Permettre d'envoyer avec Entrée depuis le champ objet
+    // Gérer l'affichage/masquage du champ objet
     const subjectInput = document.getElementById('subjectInput');
+    const subjectWrapper = document.querySelector('.subject-input-wrapper');
+    
+    function toggleSubjectInput() {
+        if (subjectInput.value.trim() || document.activeElement === subjectInput) {
+            subjectWrapper.classList.add('show');
+        } else {
+            subjectWrapper.classList.remove('show');
+        }
+    }
+    
+    subjectInput.addEventListener('focus', toggleSubjectInput);
+    subjectInput.addEventListener('blur', function() {
+        setTimeout(toggleSubjectInput, 200); // Délai pour permettre le clic sur le bouton
+    });
+    subjectInput.addEventListener('input', toggleSubjectInput);
+    
+    // Permettre d'envoyer avec Entrée depuis le champ objet
     subjectInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault(); // Empêcher le saut de ligne
