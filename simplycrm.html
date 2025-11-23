@@ -350,16 +350,8 @@ body {
 
 .subject-input-wrapper {
     padding: 6px 8px 4px 8px;
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
+    display: block;
     transition: all 0.2s ease-out;
-}
-
-.subject-input-wrapper.show {
-    max-height: 60px;
-    opacity: 1;
-    padding: 6px 8px 4px 8px;
 }
 
 .subject-input-container {
@@ -1755,25 +1747,8 @@ function initializeApp() {
         }
     });
     
-    // Gérer l'affichage/masquage du champ objet
-    const subjectInput = document.getElementById('subjectInput');
-    const subjectWrapper = document.querySelector('.subject-input-wrapper');
-    
-    function toggleSubjectInput() {
-        if (subjectInput.value.trim() || document.activeElement === subjectInput) {
-            subjectWrapper.classList.add('show');
-        } else {
-            subjectWrapper.classList.remove('show');
-        }
-    }
-    
-    subjectInput.addEventListener('focus', toggleSubjectInput);
-    subjectInput.addEventListener('blur', function() {
-        setTimeout(toggleSubjectInput, 200); // Délai pour permettre le clic sur le bouton
-    });
-    subjectInput.addEventListener('input', toggleSubjectInput);
-    
     // Permettre d'envoyer avec Entrée depuis le champ objet
+    const subjectInput = document.getElementById('subjectInput');
     subjectInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault(); // Empêcher le saut de ligne
