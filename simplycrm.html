@@ -26,6 +26,11 @@ body {
     background-color: #f0f0f0;
 }
 
+/* Cacher l'application par défaut, elle sera affichée après authentification */
+#mainApp {
+    display: none;
+}
+
 /* Sidebar */
 .sidebar {
     width: 350px;
@@ -533,6 +538,11 @@ body {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(2px);
+}
+
+/* La popup de connexion est visible par défaut */
+#loginModal {
+    display: block;
 }
 
 .modal-content {
@@ -1249,6 +1259,22 @@ body {
     </style>
 </head>
 <body>
+    <script>
+        // Script immédiat pour s'assurer que la popup s'affiche
+        (function() {
+            try {
+                // S'assurer que la popup de connexion est visible
+                window.addEventListener('DOMContentLoaded', function() {
+                    var loginModal = document.getElementById('loginModal');
+                    if (loginModal) {
+                        loginModal.style.display = 'block';
+                    }
+                });
+            } catch(e) {
+                console.error('Erreur script inline:', e);
+            }
+        })();
+    </script>
     <div class="app" id="mainApp">
         <!-- Sidebar gauche -->
         <div class="sidebar">
@@ -1532,52 +1558,54 @@ function setAuthenticated(value) {
 
 // Fonction pour initialiser l'authentification (appelée après le chargement du DOM)
 function initializeAuth() {
-    const loginModal = document.getElementById('loginModal');
-    const mainApp = document.getElementById('mainApp');
-    
-    if (!loginModal || !mainApp) {
-        console.error('Éléments DOM non trouvés');
-        return;
-    }
-    
-    // Vérifier l'authentification au chargement
-    if (!isAuthenticated()) {
-        loginModal.style.display = 'block';
-        mainApp.style.display = 'none';
-    } else {
-        loginModal.style.display = 'none';
-        mainApp.style.display = 'flex';
-    }
-    
-    // Gestion de la connexion
-    const loginBtn = document.getElementById('loginBtn');
-    const loginCodeInput = document.getElementById('loginCode');
-    
-    if (loginBtn) {
-        loginBtn.addEventListener('click', function() {
-            const loginCode = loginCodeInput.value.trim();
-            const accessCode = getAccessCode();
+    try {
+        const loginModal = document.getElementById('loginModal');
+        const mainApp = document.getElementById('mainApp');
+        
+        // Vérifier l'authentification au chargement
+        if (isAuthenticated()) {
+            // Utilisateur déjà authentifié
+            if (loginModal) loginModal.style.display = 'none';
+            if (mainApp) mainApp.style.display = 'flex';
+        } else {
+            // Utilisateur non authentifié - afficher la popup de connexion
+            if (loginModal) loginModal.style.display = 'block';
+            if (mainApp) mainApp.style.display = 'none';
+        }
+        
+        // Gestion de la connexion
+        const loginBtn = document.getElementById('loginBtn');
+        const loginCodeInput = document.getElementById('loginCode');
+        
+        if (loginBtn && loginCodeInput) {
+            loginBtn.addEventListener('click', function() {
+                const loginCode = loginCodeInput.value.trim();
+                const accessCode = getAccessCode();
+                
+                if (loginCode === accessCode) {
+                    setAuthenticated(true);
+                    if (loginModal) loginModal.style.display = 'none';
+                    if (mainApp) mainApp.style.display = 'flex';
+                    checkConfig();
+                } else {
+                    alert('Code d\'accès incorrect');
+                    loginCodeInput.value = '';
+                    loginCodeInput.focus();
+                }
+            });
             
-            if (loginCode === accessCode) {
-                setAuthenticated(true);
-                loginModal.style.display = 'none';
-                mainApp.style.display = 'flex';
-                checkConfig();
-            } else {
-                alert('Code d\'accès incorrect');
-                loginCodeInput.value = '';
-                loginCodeInput.focus();
-            }
-        });
-    }
-    
-    // Permettre la connexion avec Enter
-    if (loginCodeInput) {
-        loginCodeInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                loginBtn.click();
-            }
-        });
+            // Permettre la connexion avec Enter
+            loginCodeInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    loginBtn.click();
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Erreur lors de l\'initialisation de l\'authentification:', error);
+        // En cas d'erreur, afficher quand même la popup de connexion
+        const loginModal = document.getElementById('loginModal');
+        if (loginModal) loginModal.style.display = 'block';
     }
 }
 
