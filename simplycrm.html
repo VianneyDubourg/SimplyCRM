@@ -841,9 +841,12 @@ body {
 
     <script>
 // Configuration API Backend SMTP - Détection automatique de l'environnement
-const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:3000/api'  // Local
-    : '/api';  // Vercel (production)
+const isLocal = window.location.hostname === 'localhost' || 
+                window.location.hostname === '127.0.0.1' ||
+                window.location.hostname.includes('localhost');
+const isVercel = window.location.hostname.includes('vercel.app') || 
+                 window.location.hostname.includes('vercel.com');
+const API_URL = isLocal ? 'http://localhost:3000/api' : '/api';
 
 // Variables globales
 let conversations = JSON.parse(localStorage.getItem('conversations')) || [];
@@ -900,23 +903,39 @@ function replaceTemplateVariables(template, contact) {
 
 // Plus besoin de configuration EmailJS - on utilise le backend SMTP direct
 function checkConfig() {
-    // Vérifier que le serveur backend est accessible
+    // Afficher l'application immédiatement
+    mainApp.style.display = 'flex';
+    initializeApp();
+    
+    // Vérifier que le serveur backend est accessible (en arrière-plan)
     fetch(`${API_URL}/test-smtp`)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 console.log('✅ Backend SMTP connecté');
             } else {
-                console.warn('⚠️ Backend SMTP non disponible');
+                console.warn('⚠️ Backend SMTP non disponible:', data.error);
+                if (isLocal) {
+                    console.warn('💡 Assurez-vous que le serveur local est démarré (npm start)');
+                } else if (isVercel) {
+                    console.warn('💡 Vérifiez que SMTP_PASSWORD est configuré dans Vercel');
+                }
             }
         })
         .catch(error => {
             console.error('❌ Erreur de connexion au backend:', error);
-            alert('⚠️ Le serveur backend n\'est pas démarré. Veuillez lancer "npm start" dans le terminal.');
+            if (isLocal) {
+                console.warn('💡 Le serveur backend local n\'est pas démarré. Lancez "npm start"');
+            } else if (isVercel) {
+                console.warn('💡 Vérifiez la configuration SMTP dans Vercel (Environment Variables)');
+            }
+            // Ne pas bloquer l'application, juste logger l'erreur
         });
-    
-    mainApp.style.display = 'flex';
-    initializeApp();
 }
 
 // Gestion des conversations
@@ -1126,12 +1145,24 @@ async function sendEmail(to, subject, content) {
         console.error('Erreur lors de l\'envoi:', error);
         const errorMessage = error.message || error.toString() || 'Erreur inconnue';
         
-        // Message d'erreur plus clair
+        // Message d'erreur plus clair selon l'environnement
         if (errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')) {
-            return { 
-                success: false, 
-                error: 'Le serveur backend n\'est pas démarré. Lancez "npm start" dans le terminal.' 
-            };
+            if (isLocal) {
+                return { 
+                    success: false, 
+                    error: 'Le serveur backend n\'est pas démarré. Lancez "npm start" dans le terminal.' 
+                };
+            } else if (isVercel) {
+                return { 
+                    success: false, 
+                    error: 'Erreur de connexion. Vérifiez que SMTP_PASSWORD est configuré dans Vercel (Settings → Environment Variables) et redéployez.' 
+                };
+            } else {
+                return { 
+                    success: false, 
+                    error: 'Erreur de connexion au serveur backend.' 
+                };
+            }
         }
         
         return { success: false, error: errorMessage };

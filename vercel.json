@@ -16,6 +16,10 @@
       "dest": "/api/$1"
     },
     {
+      "src": "/",
+      "dest": "/simplycrm.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/simplycrm.html"
     }
