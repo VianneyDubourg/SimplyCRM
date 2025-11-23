@@ -535,6 +535,13 @@ body {
     backdrop-filter: blur(2px);
 }
 
+/* La popup de connexion doit toujours être visible par défaut */
+#loginModal {
+    display: block !important;
+    z-index: 10000 !important;
+    position: fixed !important;
+}
+
 .modal-content {
     background-color: #ffffff;
     margin: 5% auto;
@@ -1249,10 +1256,6 @@ body {
     </style>
 </head>
 <body>
-    <!-- Test de visibilité -->
-    <div style="position: fixed; top: 0; left: 0; z-index: 9999; background: red; color: white; padding: 10px;">
-        Page chargée - Si vous voyez ceci, le HTML fonctionne
-    </div>
     <div class="app" id="mainApp" style="display: none;">
         <!-- Sidebar gauche -->
         <div class="sidebar">
@@ -1447,7 +1450,7 @@ body {
         </div>
 
         <!-- Modal de connexion -->
-        <div id="loginModal" class="modal" style="display: block !important;">
+        <div id="loginModal" class="modal" style="display: block !important; z-index: 10000 !important; position: fixed !important;">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3>Accès SimplyCRM</h3>
