@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimplyCRM - Email WhatsApp Style</title>
+    <!-- EmailJS remplacé par backend SMTP direct -->
+    <style>
+/* Reset et base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f0f0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app {
+    display: flex;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 350px;
+    background-color: #ffffff;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    height: 60px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #25d366;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sidebar-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #54656f;
+    transition: background-color 0.2s;
+}
+
+.action-btn:hover {
+    background-color: #f5f5f5;
+}
+
+.search-container {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    font-size: 14px;
+    outline: none;
+}
+
+#searchInput::placeholder {
+    color: #54656f;
+}
+
+.conversations-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.conversation-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
+}
+
+.conversation-item:hover,
+.conversation-item.active {
+    background-color: #f0f2f5;
+}
+
+.conversation-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin-right: 12px;
+    background-color: #25d366;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+}
+
+.conversation-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.conversation-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: #111b21;
+    margin-bottom: 4px;
+}
+
+.conversation-last-message {
+    font-size: 14px;
+    color: #54656f;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.conversation-time {
+    font-size: 12px;
+    color: #54656f;
+    margin-left: 8px;
+}
+
+/* Chat Container */
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #e5ddd5;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text fill="%23f0f0f0" font-size="20" y="50%">💬</text></svg>');
+    background-repeat: repeat;
+    background-size: 50px 50px;
+    position: relative;
+}
+
+.chat-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text fill="%23f0f0f0" font-size="20" y="50%">💬</text></svg>');
+    background-repeat: repeat;
+    background-size: 50px 50px;
+    opacity: 0.1;
+    pointer-events: none;
+}
+
+.chat-header {
+    height: 60px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    border-left: 1px solid #e0e0e0;
+}
+
+.chat-info {
+    display: flex;
+    align-items: center;
+}
+
+.contact-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+    background-color: #25d366;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+}
+
+.contact-details h3 {
+    font-size: 16px;
+    font-weight: 500;
+    color: #111b21;
+    margin-bottom: 2px;
+}
+
+.contact-details span {
+    font-size: 14px;
+    color: #54656f;
+}
+
+.chat-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.chat-action-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #54656f;
+    transition: background-color 0.2s;
+}
+
+.chat-action-btn:hover {
+    background-color: #e0e0e0;
+}
+
+/* Messages */
+.messages-container {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.welcome-message {
+    text-align: center;
+    margin: auto;
+    max-width: 300px;
+}
+
+.welcome-message h2 {
+    font-size: 24px;
+    color: #54656f;
+    margin-bottom: 16px;
+}
+
+.welcome-message p {
+    color: #54656f;
+    line-height: 1.5;
+}
+
+.message {
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.message.sent {
+    align-items: flex-end;
+}
+
+.message.received {
+    align-items: flex-start;
+}
+
+.message-bubble {
+    max-width: 60%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    position: relative;
+    word-wrap: break-word;
+}
+
+.message.sent .message-bubble {
+    background-color: #dcf8c6;
+    color: #303030;
+}
+
+.message.received .message-bubble {
+    background-color: #ffffff;
+    color: #303030;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.message-content {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.message-time {
+    font-size: 11px;
+    color: #54656f;
+    margin-top: 4px;
+    text-align: right;
+}
+
+.message.sent .message-time {
+    text-align: right;
+}
+
+.message.received .message-time {
+    text-align: left;
+}
+
+/* Message Input */
+.message-input-container {
+    background-color: #f0f0f0;
+    border-top: 1px solid #e0e0e0;
+    padding: 8px 16px;
+}
+
+.input-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.input-action-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #54656f;
+    transition: background-color 0.2s;
+}
+
+.input-action-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.message-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.message-input input {
+    flex: 1;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 24px;
+    background-color: #ffffff;
+    font-size: 14px;
+    outline: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.send-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background-color: #25d366;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.send-btn:hover {
+    background-color: #20ba5a;
+}
+
+/* Modals */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #ffffff;
+    margin: 10% auto;
+    padding: 0;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #111b21;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #54656f;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+/* Template Form */
+.template-form {
+    margin-bottom: 20px;
+}
+
+.template-form input,
+.template-form textarea,
+.template-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+}
+
+.template-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.template-form button {
+    background-color: #25d366;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.template-form button:hover {
+    background-color: #20ba5a;
+}
+
+.templates-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.template-item {
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.template-item:hover {
+    background-color: #f5f5f5;
+}
+
+.template-name {
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: #111b21;
+}
+
+.template-preview {
+    font-size: 12px;
+    color: #54656f;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Broadcast Form */
+.broadcast-form textarea {
+    min-height: 150px;
+    margin-bottom: 16px;
+}
+
+.broadcast-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+}
+
+.broadcast-form button {
+    background-color: #25d366;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.broadcast-form button:hover {
+    background-color: #20ba5a;
+}
+
+.broadcast-results {
+    margin-top: 20px;
+}
+
+.result-item {
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.result-item.success {
+    background-color: #dcf8c6;
+    color: #303030;
+}
+
+.result-item.error {
+    background-color: #ffeaea;
+    color: #d93025;
+}
+
+/* New Chat Form */
+.new-chat-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+}
+
+.new-chat-form button {
+    background-color: #25d366;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.new-chat-form button:hover {
+    background-color: #20ba5a;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        position: absolute;
+        z-index: 10;
+        left: -100%;
+        transition: left 0.3s;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .chat-container {
+        width: 100%;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.message {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Scrollbar styling */
+.messages-container::-webkit-scrollbar,
+.conversations-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.messages-container::-webkit-scrollbar-track,
+.conversations-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.messages-container::-webkit-scrollbar-thumb,
+.conversations-list::-webkit-scrollbar-thumb {
+    background: #cccccc;
+    border-radius: 3px;
+}
+
+.messages-container::-webkit-scrollbar-thumb:hover,
+.conversations-list::-webkit-scrollbar-thumb:hover {
+    background: #aaaaaa;
+}
+
+/* Configuration section */
+.config-section {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+    display: none;
+}
+
+.config-section.show {
+    display: block;
+}
+
+.config-form {
+    max-width: 400px;
+}
+
+.config-form input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.config-form button {
+    background-color: #25d366;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.config-form button:hover {
+    background-color: #20ba5a;
+}
+    </style>
+</head>
+<body>
+    <div class="app" id="mainApp">
+        <!-- Sidebar gauche -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="user-avatar">
+                    <span>VS</span>
+                </div>
+                <div class="sidebar-actions">
+                    <button id="newChatBtn" class="action-btn" title="Nouvelle conversation">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                    </button>
+                    <button id="templatesBtn" class="action-btn" title="Templates">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                        </svg>
+                    </button>
+                    <button id="broadcastBtn" class="action-btn" title="Envoi en masse">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M11,6V8H13V6H11M11,10V18H13V10H11Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Rechercher des conversations...">
+            </div>
+
+            <div class="conversations-list" id="conversationsList">
+                <!-- Les conversations seront ajoutées dynamiquement -->
+            </div>
+        </div>
+
+        <!-- Zone principale du chat -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="chat-info">
+                    <div class="contact-avatar">
+                        <span>C</span>
+                    </div>
+                    <div class="contact-details">
+                        <h3 id="contactName">Sélectionnez une conversation</h3>
+                        <span id="contactEmail">email@exemple.com</span>
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <button id="callBtn" class="chat-action-btn" title="Appel">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.62,10.79c1.44,2.83,3.76,5.14,6.59,6.59l2.2-2.2c0.27-0.27,0.67-0.36,1.02-0.24 c1.12,0.37,2.33,0.57,3.57,0.57c0.55,0,1,0.45,1,1V20c0,0.55-0.45,1-1,1c-9.39,0-17-7.61-17-17c0-0.55,0.45-1-1,1,1h3.5 c0.55,0,1,0.45,1,1c0,1.25,0.2,2.45,0.57,3.57c0.11,0.35,0.03,0.74-0.25,1.02L6.62,10.79z"/>
+                        </svg>
+                    </button>
+                    <button id="videoBtn" class="chat-action-btn" title="Vidéo">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17,10.5V7A1,1 0 0,0 16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="messages-container" id="messagesContainer">
+                <div class="welcome-message">
+                    <h2>👋 Bienvenue sur SimplyCRM</h2>
+                    <p>Sélectionnez une conversation ou créez-en une nouvelle pour commencer à envoyer des emails.</p>
+                </div>
+            </div>
+
+            <div class="message-input-container">
+                <div class="input-actions">
+                    <button id="attachBtn" class="input-action-btn" title="Pièce jointe">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M16.5,6V17.5A4,4 0 0,1 12.5,21.5A4,4 0 0,1 8.5,17.5V5A2.5,2.5 0 0,1 11,2.5A2.5,2.5 0 0,1 13.5,5V15.5A1,1 0 0,1 12.5,16.5A1,1 0 0,1 11.5,15.5V6H10V15.5A2.5,2.5 0 0,0 12.5,18A2.5,2.5 0 0,0 15,15.5V5A4,4 0 0,0 7,5V17.5A5.5,5.5 0 0,0 12.5,23A5.5,5.5 0 0,0 18,17.5V6H16.5Z"/>
+                        </svg>
+                    </button>
+                    <button id="templateQuickBtn" class="input-action-btn" title="Templates rapides">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="message-input">
+                    <input type="text" id="messageInput" placeholder="Tapez votre message...">
+                    <button id="sendBtn" class="send-btn" title="Envoyer">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal pour les templates -->
+        <div id="templatesModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Templates d'emails</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="template-form">
+                        <input type="text" id="templateName" placeholder="Nom du template">
+                        <textarea id="templateContent" placeholder="Contenu du template (utilisez {nom} pour le nom, {prenom} pour le prénom, etc.)"></textarea>
+                        <button id="saveTemplateBtn">Sauvegarder</button>
+                    </div>
+                    <div class="templates-list" id="templatesList">
+                        <!-- Templates seront ajoutés ici -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal pour broadcast -->
+        <div id="broadcastModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Envoi en masse</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="broadcast-form">
+                        <select id="broadcastTemplate">
+                            <option value="">Choisir un template</option>
+                        </select>
+                        <textarea id="broadcastEmails" placeholder="Emails séparés par des virgules ou sauts de ligne"></textarea>
+                        <button id="sendBroadcastBtn">Envoyer à tous</button>
+                    </div>
+                    <div class="broadcast-results" id="broadcastResults">
+                        <!-- Résultats de l'envoi -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal pour nouveau chat -->
+        <div id="newChatModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Nouvelle conversation</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="new-chat-form">
+                        <input type="text" id="newContactName" placeholder="Nom du contact">
+                        <input type="email" id="newContactEmail" placeholder="Email du contact">
+                        <button id="createChatBtn">Créer la conversation</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+// Configuration API Backend SMTP - Détection automatique de l'environnement
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3000/api'  // Local
+    : '/api';  // Vercel (production)
+
+// Variables globales
+let conversations = JSON.parse(localStorage.getItem('conversations')) || [];
+let templates = JSON.parse(localStorage.getItem('templates')) || [];
+let currentConversationId = null;
+let isBroadcastMode = false;
+
+// Éléments DOM
+const mainApp = document.getElementById('mainApp');
+const conversationsList = document.getElementById('conversationsList');
+const messagesContainer = document.getElementById('messagesContainer');
+const messageInput = document.getElementById('messageInput');
+const sendBtn = document.getElementById('sendBtn');
+const contactName = document.getElementById('contactName');
+const contactEmail = document.getElementById('contactEmail');
+const searchInput = document.getElementById('searchInput');
+
+// Fonctions utilitaires
+function saveToLocalStorage() {
+    localStorage.setItem('conversations', JSON.stringify(conversations));
+    localStorage.setItem('templates', JSON.stringify(templates));
+}
+
+function generateId() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+function formatTime(date) {
+    return new Date(date).toLocaleTimeString('fr-FR', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function getInitials(name) {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+}
+
+function replaceTemplateVariables(template, contact) {
+    let content = template;
+    const variables = {
+        '{nom}': contact.name.split(' ').pop() || '',
+        '{prenom}': contact.name.split(' ')[0] || '',
+        '{nom_complet}': contact.name,
+        '{email}': contact.email
+    };
+
+    Object.keys(variables).forEach(variable => {
+        content = content.replace(new RegExp(variable, 'g'), variables[variable]);
+    });
+
+    return content;
+}
+
+// Plus besoin de configuration EmailJS - on utilise le backend SMTP direct
+function checkConfig() {
+    // Vérifier que le serveur backend est accessible
+    fetch(`${API_URL}/test-smtp`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('✅ Backend SMTP connecté');
+            } else {
+                console.warn('⚠️ Backend SMTP non disponible');
+            }
+        })
+        .catch(error => {
+            console.error('❌ Erreur de connexion au backend:', error);
+            alert('⚠️ Le serveur backend n\'est pas démarré. Veuillez lancer "npm start" dans le terminal.');
+        });
+    
+    mainApp.style.display = 'flex';
+    initializeApp();
+}
+
+// Gestion des conversations
+function renderConversations() {
+    conversationsList.innerHTML = '';
+
+    conversations.forEach(conversation => {
+        const conversationItem = document.createElement('div');
+        conversationItem.className = 'conversation-item';
+        if (conversation.id === currentConversationId) {
+            conversationItem.classList.add('active');
+        }
+
+        conversationItem.innerHTML = `
+            <div class="conversation-avatar">
+                ${getInitials(conversation.contact.name)}
+            </div>
+            <div class="conversation-info">
+                <div class="conversation-name">${conversation.contact.name}</div>
+                <div class="conversation-last-message">
+                    ${conversation.messages.length > 0 ?
+                        conversation.messages[conversation.messages.length - 1].content.substring(0, 30) + '...' :
+                        'Nouvelle conversation'
+                    }
+                </div>
+            </div>
+            <div class="conversation-time">
+                ${conversation.messages.length > 0 ?
+                    formatTime(conversation.messages[conversation.messages.length - 1].timestamp) :
+                    ''
+                }
+            </div>
+        `;
+
+        conversationItem.addEventListener('click', () => selectConversation(conversation.id));
+        conversationsList.appendChild(conversationItem);
+    });
+}
+
+function selectConversation(conversationId) {
+    currentConversationId = conversationId;
+    renderConversations();
+    renderMessages();
+
+    const conversation = conversations.find(c => c.id === conversationId);
+    if (conversation) {
+        contactName.textContent = conversation.contact.name;
+        contactEmail.textContent = conversation.contact.email;
+    }
+}
+
+function renderMessages() {
+    messagesContainer.innerHTML = '';
+
+    if (!currentConversationId) {
+        messagesContainer.innerHTML = `
+            <div class="welcome-message">
+                <h2>👋 Bienvenue sur SimplyCRM</h2>
+                <p>Sélectionnez une conversation ou créez-en une nouvelle pour commencer à envoyer des emails.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const conversation = conversations.find(c => c.id === currentConversationId);
+    if (!conversation) return;
+
+    conversation.messages.forEach(message => {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${message.type}`;
+
+        messageDiv.innerHTML = `
+            <div class="message-bubble">
+                <div class="message-content">${message.content.replace(/\n/g, '<br>')}</div>
+                <div class="message-time">${formatTime(message.timestamp)}</div>
+            </div>
+        `;
+
+        messagesContainer.appendChild(messageDiv);
+    });
+
+    // Scroll to bottom
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function addMessage(conversationId, content, type = 'sent') {
+    const conversation = conversations.find(c => c.id === conversationId);
+    if (!conversation) return;
+
+    const message = {
+        id: generateId(),
+        content: content,
+        type: type,
+        timestamp: new Date().toISOString()
+    };
+
+    conversation.messages.push(message);
+    saveToLocalStorage();
+    renderMessages();
+}
+
+function createConversation(contactName, contactEmail) {
+    const conversation = {
+        id: generateId(),
+        contact: {
+            name: contactName,
+            email: contactEmail
+        },
+        messages: [],
+        createdAt: new Date().toISOString()
+    };
+
+    conversations.unshift(conversation);
+    saveToLocalStorage();
+    renderConversations();
+    selectConversation(conversation.id);
+
+    return conversation;
+}
+
+// Gestion des templates
+function renderTemplates() {
+    templatesList.innerHTML = '';
+
+    templates.forEach(template => {
+        const templateItem = document.createElement('div');
+        templateItem.className = 'template-item';
+
+        templateItem.innerHTML = `
+            <div class="template-name">${template.name}</div>
+            <div class="template-preview">${template.content.substring(0, 50)}...</div>
+        `;
+
+        templateItem.addEventListener('click', () => useTemplate(template));
+        templatesList.appendChild(templateItem);
+    });
+
+    // Update broadcast template select
+    broadcastTemplate.innerHTML = '<option value="">Choisir un template</option>';
+    templates.forEach(template => {
+        const option = document.createElement('option');
+        option.value = template.id;
+        option.textContent = template.name;
+        broadcastTemplate.appendChild(option);
+    });
+}
+
+function saveTemplate(name, content) {
+    if (!name || !content) {
+        alert('Veuillez remplir tous les champs');
+        return;
+    }
+
+    const template = {
+        id: generateId(),
+        name: name,
+        content: content,
+        createdAt: new Date().toISOString()
+    };
+
+    templates.push(template);
+    saveToLocalStorage();
+    renderTemplates();
+
+    // Clear form
+    templateName.value = '';
+    templateContent.value = '';
+}
+
+function useTemplate(template) {
+    if (!currentConversationId) {
+        alert('Veuillez d\'abord sélectionner une conversation');
+        return;
+    }
+
+    const conversation = conversations.find(c => c.id === currentConversationId);
+    const content = replaceTemplateVariables(template.content, conversation.contact);
+
+    messageInput.value = content;
+    templatesModal.style.display = 'none';
+}
+
+// Envoi d'emails via backend SMTP direct
+async function sendEmail(to, subject, content) {
+    try {
+        const response = await fetch(`${API_URL}/send-email`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                to: to,
+                subject: subject || 'Message de SimplyCRM',
+                message: content,
+                replyTo: 'vianney@stelneo.com'
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Erreur lors de l\'envoi');
+        }
+
+        return { success: true, result: data };
+    } catch (error) {
+        console.error('Erreur lors de l\'envoi:', error);
+        const errorMessage = error.message || error.toString() || 'Erreur inconnue';
+        
+        // Message d'erreur plus clair
+        if (errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')) {
+            return { 
+                success: false, 
+                error: 'Le serveur backend n\'est pas démarré. Lancez "npm start" dans le terminal.' 
+            };
+        }
+        
+        return { success: false, error: errorMessage };
+    }
+}
+
+async function sendMessage() {
+    const content = messageInput.value.trim();
+    if (!content || !currentConversationId) return;
+
+    const conversation = conversations.find(c => c.id === currentConversationId);
+    if (!conversation) return;
+
+    // Add message to UI immediately
+    addMessage(currentConversationId, content, 'sent');
+    messageInput.value = '';
+
+    // Send email
+    const result = await sendEmail(
+        conversation.contact.email,
+        `Message de ${conversation.contact.name}`,
+        content
+    );
+
+    if (!result.success) {
+        alert(`Erreur lors de l'envoi: ${result.error}`);
+        // Remove the message from UI if sending failed
+        conversation.messages.pop();
+        renderMessages();
+    }
+}
+
+// Broadcast functionality
+async function sendBroadcast() {
+    const templateId = broadcastTemplate.value;
+    const emailsText = broadcastEmails.value.trim();
+
+    if (!templateId || !emailsText) {
+        alert('Veuillez sélectionner un template et saisir des emails');
+        return;
+    }
+
+    const template = templates.find(t => t.id === templateId);
+    if (!template) return;
+
+    // Parse emails
+    const emails = emailsText.split(/[\n,]/).map(email => email.trim()).filter(email => email);
+
+    broadcastResults.innerHTML = '';
+
+    for (const email of emails) {
+        if (!email.includes('@')) continue;
+
+        // Create conversation if it doesn't exist
+        let conversation = conversations.find(c => c.contact.email === email);
+        if (!conversation) {
+            // Extract name from email if possible, otherwise use email as name
+            const name = email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            conversation = createConversation(name, email);
+        }
+
+        const content = replaceTemplateVariables(template.content, conversation.contact);
+        addMessage(conversation.id, content, 'sent');
+
+        const result = await sendEmail(
+            email,
+            `Message de ${conversation.contact.name}`,
+            content
+        );
+
+        const resultItem = document.createElement('div');
+        resultItem.className = `result-item ${result.success ? 'success' : 'error'}`;
+        resultItem.textContent = `${email}: ${result.success ? 'Envoyé' : 'Erreur - ' + result.error}`;
+        broadcastResults.appendChild(resultItem);
+    }
+
+    renderConversations();
+}
+
+// Event listeners
+function initializeApp() {
+    renderConversations();
+    renderTemplates();
+
+    // Message sending
+    sendBtn.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // Search
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const conversationItems = document.querySelectorAll('.conversation-item');
+
+        conversationItems.forEach(item => {
+            const name = item.querySelector('.conversation-name').textContent.toLowerCase();
+            const email = conversations.find(c =>
+                c.contact.name === item.querySelector('.conversation-name').textContent
+            )?.contact.email.toLowerCase() || '';
+
+            if (name.includes(searchTerm) || email.includes(searchTerm)) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+
+    // Modal controls
+    document.getElementById('templatesBtn').addEventListener('click', () => {
+        templatesModal.style.display = 'block';
+    });
+
+    document.getElementById('broadcastBtn').addEventListener('click', () => {
+        broadcastModal.style.display = 'block';
+    });
+
+    document.getElementById('newChatBtn').addEventListener('click', () => {
+        newChatModal.style.display = 'block';
+    });
+
+    document.querySelectorAll('.close-modal').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.closest('.modal').style.display = 'none';
+        });
+    });
+
+    // Template functionality
+    saveTemplateBtn.addEventListener('click', () => {
+        saveTemplate(templateName.value, templateContent.value);
+    });
+
+    // Broadcast functionality
+    sendBroadcastBtn.addEventListener('click', sendBroadcast);
+
+    // New chat functionality
+    createChatBtn.addEventListener('click', () => {
+        const name = newContactName.value.trim();
+        const email = newContactEmail.value.trim();
+
+        if (!name || !email) {
+            alert('Veuillez remplir tous les champs');
+            return;
+        }
+
+        if (!email.includes('@')) {
+            alert('Veuillez saisir un email valide');
+            return;
+        }
+
+        createConversation(name, email);
+        newChatModal.style.display = 'none';
+        newContactName.value = '';
+        newContactEmail.value = '';
+    });
+
+    // Quick template button
+    document.getElementById('templateQuickBtn').addEventListener('click', () => {
+        if (templates.length === 0) {
+            alert('Aucun template disponible. Créez-en un d\'abord.');
+            return;
+        }
+
+        // Show a simple template selector
+        const templateSelect = document.createElement('select');
+        templateSelect.innerHTML = '<option value="">Choisir un template</option>';
+        templates.forEach(template => {
+            const option = document.createElement('option');
+            option.value = template.id;
+            option.textContent = template.name;
+            templateSelect.appendChild(option);
+        });
+
+        templateSelect.addEventListener('change', function() {
+            const template = templates.find(t => t.id === this.value);
+            if (template && currentConversationId) {
+                const conversation = conversations.find(c => c.id === currentConversationId);
+                const content = replaceTemplateVariables(template.content, conversation.contact);
+                messageInput.value = content;
+            }
+            templateSelect.remove();
+        });
+
+        messageInput.parentNode.insertBefore(templateSelect, messageInput);
+        templateSelect.focus();
+    });
+
+    // Close modals when clicking outside
+    window.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal')) {
+            e.target.style.display = 'none';
+        }
+    });
+}
+
+// Initialize the app
+document.addEventListener('DOMContentLoaded', checkConfig);
+    </script>
+</body>
+</html>

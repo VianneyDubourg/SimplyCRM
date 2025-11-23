@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "simplycrm.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/simplycrm.html"
+    }
+  ],
+  "env": {
+    "SMTP_HOST": "mail.stelneo.com",
+    "SMTP_PORT": "587",
+    "SMTP_USER": "vianney@stelneo.com",
+    "SMTP_FROM_NAME": "Vianney Stelneo"
+  }
+}
+
