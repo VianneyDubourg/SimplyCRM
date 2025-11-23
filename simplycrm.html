@@ -349,7 +349,7 @@ body {
 }
 
 .subject-input-wrapper {
-    padding: 6px 8px 4px 8px;
+    padding: 8px 8px 4px 8px;
     display: block;
     transition: all 0.2s ease-out;
 }
@@ -360,30 +360,33 @@ body {
 
 .subject-input-container input {
     width: 100%;
-    padding: 6px 12px;
+    padding: 7px 12px;
     border: none;
     border-radius: 8px;
     background-color: #ffffff;
     font-size: 13px;
     outline: none;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
     color: #111b21;
     transition: all 0.15s;
+    font-family: inherit;
 }
 
 .subject-input-container input::placeholder {
     color: #667781;
-    font-style: normal;
+    font-style: italic;
+    font-size: 13px;
 }
 
 .subject-input-container input:focus {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    background-color: #ffffff;
 }
 
 .message-input-wrapper {
     display: flex;
     align-items: flex-end;
-    padding: 6px 8px;
+    padding: 6px 8px 8px 8px;
     gap: 8px;
     background-color: #f0f2f5;
 }
@@ -421,32 +424,50 @@ body {
 
 .message-input {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     gap: 8px;
     flex: 1;
     background-color: #ffffff;
     border-radius: 21px;
-    padding: 2px 2px 2px 12px;
+    padding: 6px 2px 6px 12px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-    min-height: 44px;
+    min-height: 60px;
 }
 
-.message-input input {
+.message-input textarea {
     flex: 1;
-    padding: 9px 0;
+    padding: 4px 0;
     border: none;
     background: transparent;
     font-size: 15px;
     outline: none;
     color: #111b21;
-    min-height: 20px;
-    max-height: 100px;
+    min-height: 48px;
+    max-height: 200px;
     resize: none;
     line-height: 20px;
     font-family: inherit;
+    overflow-y: auto;
 }
 
-.message-input input::placeholder {
+.message-input textarea::-webkit-scrollbar {
+    width: 4px;
+}
+
+.message-input textarea::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.message-input textarea::-webkit-scrollbar-thumb {
+    background: #cccccc;
+    border-radius: 2px;
+}
+
+.message-input textarea::-webkit-scrollbar-thumb:hover {
+    background: #aaaaaa;
+}
+
+.message-input textarea::placeholder {
     color: #667781;
 }
 
@@ -464,6 +485,7 @@ body {
     transition: all 0.15s;
     flex-shrink: 0;
     box-shadow: none;
+    margin-bottom: 4px;
 }
 
 .send-btn:hover {
@@ -475,7 +497,7 @@ body {
     transform: scale(0.95);
 }
 
-.message-input:has(input:not(:placeholder-shown)) .send-btn {
+.message-input:has(textarea:not(:placeholder-shown)) .send-btn {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
@@ -1152,7 +1174,7 @@ body {
                         </button>
                     </div>
                     <div class="message-input">
-                        <input type="text" id="messageInput" placeholder="Tapez un message">
+                        <textarea id="messageInput" placeholder="Tapez un message" rows="3"></textarea>
                         <button id="sendBtn" class="send-btn" title="Envoyer">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
@@ -1626,6 +1648,7 @@ async function sendMessage() {
     // Add message to UI immediately
     addMessage(currentConversationId, content, 'sent');
     messageInput.value = '';
+    messageInput.style.height = '48px'; // Réinitialiser la hauteur du textarea
     document.getElementById('subjectInput').value = ''; // Réinitialiser l'objet après envoi
 
     // Send email avec l'objet personnalisé (vide si non spécifié)
@@ -1739,10 +1762,28 @@ function initializeApp() {
     renderConversations();
     renderTemplates();
 
+    // Initialiser la hauteur du textarea
+    messageInput.style.height = '48px';
+
+    // Fonction pour auto-ajuster la hauteur du textarea
+    function autoResizeTextarea(textarea) {
+        textarea.style.height = 'auto';
+        const newHeight = Math.min(Math.max(textarea.scrollHeight, 48), 200);
+        textarea.style.height = newHeight + 'px';
+    }
+
     // Message sending
     sendBtn.addEventListener('click', sendMessage);
-    messageInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
+    
+    // Auto-ajuster la hauteur du textarea
+    messageInput.addEventListener('input', function() {
+        autoResizeTextarea(this);
+    });
+    
+    // Envoyer avec Ctrl+Enter ou Cmd+Enter, Enter seul crée une nouvelle ligne
+    messageInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
             sendMessage();
         }
     });
