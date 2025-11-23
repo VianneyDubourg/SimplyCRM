@@ -864,29 +864,79 @@ body {
 }
 
 /* New Chat Form */
+.new-chat-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.new-chat-form > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.new-chat-form label {
+    font-size: 14px;
+    color: #667781;
+    font-weight: 400;
+    margin-bottom: 4px;
+    display: block;
+}
+
 .new-chat-form input {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 16px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    font-size: 14px;
+    padding: 12px 16px;
+    margin-bottom: 0;
+    border: 1px solid #e9edef;
+    border-radius: 8px;
+    font-size: 15px;
     outline: none;
+    background-color: #ffffff;
+    color: #111b21;
+    font-family: inherit;
+    transition: border-color 0.15s;
+}
+
+.new-chat-form input::placeholder {
+    color: #667781;
+}
+
+.new-chat-form input:hover {
+    border-color: #d1d7db;
+}
+
+.new-chat-form input:focus {
+    border-color: #25d366;
+    box-shadow: 0 0 0 2px rgba(37, 211, 102, 0.1);
 }
 
 .new-chat-form button {
     background-color: #25d366;
     color: white;
     border: none;
-    padding: 12px 20px;
-    border-radius: 4px;
+    padding: 12px 24px;
+    border-radius: 24px;
     cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.2s;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.15s;
+    width: 100%;
+    margin-top: 8px;
+    box-shadow: 0 2px 4px rgba(37, 211, 102, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .new-chat-form button:hover {
     background-color: #20ba5a;
+    box-shadow: 0 4px 8px rgba(37, 211, 102, 0.3);
+    transform: translateY(-1px);
+}
+
+.new-chat-form button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(37, 211, 102, 0.2);
 }
 
 /* Responsive */
@@ -1155,9 +1205,21 @@ body {
                 </div>
                 <div class="modal-body">
                     <div class="new-chat-form">
-                        <input type="text" id="newContactName" placeholder="Nom du contact">
-                        <input type="email" id="newContactEmail" placeholder="Email du contact">
-                        <button id="createChatBtn">Créer la conversation</button>
+                        <div>
+                            <label for="newContactName">Nom du contact</label>
+                            <input type="text" id="newContactName" placeholder="Ex: Jean Dupont">
+                        </div>
+                        <div>
+                            <label for="newContactEmail">Adresse email</label>
+                            <input type="email" id="newContactEmail" placeholder="Ex: jean.dupont@email.com">
+                        </div>
+                        <button id="createChatBtn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px; vertical-align: middle;">
+                                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+                                <path d="M7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/>
+                            </svg>
+                            Créer la conversation
+                        </button>
                     </div>
                 </div>
             </div>
